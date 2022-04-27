@@ -1,0 +1,7 @@
+{
+  "name": "taskApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}

@@ -1,22 +1,39 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
-import './Tab2.css';
+import {
+  IonContent,
+  IonHeader,
+  IonPage,
+  IonTitle,
+  IonToolbar,
+  IonButton,
+  IonIcon,
+} from "@ionic/react";
+// import ExploreContainer from "../components/ExploreContainer";
+import "./Tab2.css";
+
+// we need import ion icons from ionicicons/icons
+import { star } from "ionicons/icons";
 
 const Tab2: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Tab 2</IonTitle>
+          <IonTitle>Buttons/icons</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Tab 2</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer name="Tab 2 page" />
+      <IonContent className="ion-padding">
+        <IonButton color="primary" onClick={() => console.log("clicked!")}>
+          Button check
+        </IonButton>
+        <IonButton
+          expand="full"
+          color="primary"
+          onClick={() => console.log("clicked!")}
+        >
+          {/* use icon={icon name you want to import!} */}
+          <IonIcon slot="start" icon={star}></IonIcon>
+          Expanded Button check
+        </IonButton>
       </IonContent>
     </IonPage>
   );

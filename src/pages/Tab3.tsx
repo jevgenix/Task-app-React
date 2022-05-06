@@ -15,7 +15,7 @@ const Tab3: React.FC = () => {
   const [input, setInput] = useState("");
 
   const handleInputChange = (e: any) => {
-    console.log(e.target.value);
+    setInput(e.target.value);
   };
 
   // remeber to keep dev tools open!!!!

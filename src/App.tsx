@@ -1,4 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
+import { useEffect, useState } from "react";
 import {
   IonApp,
   IonIcon,
@@ -8,6 +9,7 @@ import {
   IonTabButton,
   IonTabs,
   setupIonicReact,
+  IonSpinner,
 } from "@ionic/react";
 import { IonReactRouter } from "@ionic/react-router";
 import { ellipse, square, triangle } from "ionicons/icons";
@@ -39,19 +41,17 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import { useContext } from "react";
 
+import { getCurrentUser } from "./firebaseConfig";
+
 setupIonicReact();
 
-const App: React.FC = () => {
-  const firebaseApp = useContext(FirebaseContext);
-
-  console.log(firebaseApp);
-
+const RoutingSystem: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Route exact path="/tab1">
+            <Route render={() => <Tab1 />} exact path="/tab1">
               <Tab1 />
             </Route>
             <Route exact path="/tab2">
@@ -91,6 +91,25 @@ const App: React.FC = () => {
       </IonReactRouter>
     </IonApp>
   );
+};
+
+const App: React.FC = () => {
+  const [busy, setBusy] = useState(true);
+  const firebaseApp = useContext(FirebaseContext);
+  useEffect(() => {
+    getCurrentUser().then((user) => {
+      // regular login
+      if (user) {
+        window.history.replaceState({}, "", "/tab1");
+      } else {
+        window.history.replaceState({}, "", "/login");
+      }
+      setBusy(false);
+    });
+  }, []);
+
+  console.log(firebaseApp);
+  return <IonApp>{busy ? <IonSpinner /> : <RoutingSystem />}</IonApp>;
 };
 
 export default App;

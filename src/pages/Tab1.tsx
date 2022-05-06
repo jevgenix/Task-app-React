@@ -6,15 +6,17 @@ import {
   IonToolbar,
   IonItemOptions,
   IonItem,
-  IonText,
   IonCard,
   IonItemOption,
   IonItemSliding,
   IonLabel,
+  IonButton,
 } from "@ionic/react";
 // import ExploreContainer from "../components/ExploreContainer";
 import "./Tab1.css";
-
+import { signOut } from "firebase/auth";
+import firebase from "../firebaseConfig";
+import { useContext } from "react";
 // we will use firebase information later!
 const arr = [
   {
@@ -36,6 +38,13 @@ const arr = [
 
 // className="ion-padding" on lisätty IonContentiin
 const Tab1: React.FC = () => {
+  const handleLogOutButton = (auth: any) => {
+    console.log("aaa");
+    signOut(auth);
+    window.location.href = "/login";
+  };
+
+  const { auth } = useContext(firebase);
   return (
     <IonPage>
       <IonHeader>
@@ -69,6 +78,7 @@ const Tab1: React.FC = () => {
             </IonItemSliding>
           ))}
         </IonCard>
+        <IonButton onClick={() => handleLogOutButton(auth)}>Log out</IonButton>
       </IonContent>
     </IonPage>
   );

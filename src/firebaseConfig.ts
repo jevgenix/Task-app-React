@@ -8,14 +8,28 @@ import React from "react";
 const config = {
   apiKey: "AIzaSyByhWaGLOvIxneeBlFK9uotEUaaLi3DNbk",
   authDomain: "todo-manager-46682.firebaseapp.com",
-  databaseURL: "https://todo-manager-46682-default-rtdb.europe-west1.firebasedatabase.app",
+  databaseURL:
+    "https://todo-manager-46682-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "todo-manager-46682",
   storageBucket: "todo-manager-46682.appspot.com",
   messagingSenderId: "623826590924",
-  appId: "1:623826590924:web:0ddd68548c8cebaef83669"
+  appId: "1:623826590924:web:0ddd68548c8cebaef83669",
 };
 
 const app = initializeApp(config);
+
+export function getCurrentUser() {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = getAuth().onAuthStateChanged(function (user) {
+      if (user) {
+        resolve(user);
+      } else {
+        resolve(null);
+      }
+      unsubscribe();
+    });
+  });
+}
 
 export const context = {
   app,

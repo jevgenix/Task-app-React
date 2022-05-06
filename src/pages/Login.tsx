@@ -7,12 +7,14 @@ import {
   IonToolbar,
   IonInput,
   IonButton,
+  IonLoading,
 } from "@ionic/react";
 import { Link } from "react-router-dom";
 import firebase from "../firebaseConfig";
 import { Auth, signInWithEmailAndPassword } from "firebase/auth";
-// routerLink="/tab1"
+import { toast } from "../toast";
 
+// routerLink="/tab1"
 async function loginUser(username: string, password: string, auth: Auth) {
   const email = `${username}@test.com`;
   try {
@@ -20,15 +22,25 @@ async function loginUser(username: string, password: string, auth: Auth) {
     console.log(res);
     return true;
   } catch (err) {
-    console.log(err);
-    return false;
+    if (err instanceof Error) {
+      if (err.message === "Firebase: Error (auth/wrong-password).") {
+        toast("Wrong password!");
+      } else if (err.message === "Firebase: Error (auth/user-not-found).") {
+        toast("User not found!");
+      } else {
+        toast(err.message);
+      }
+      return false;
+    }
   }
 }
 
 const Login: React.FC = () => {
   const { auth } = useContext(firebase);
-  const [username, setUsername] = useState("");
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  // loader boolean!
+  const [busy, setBusy] = useState<boolean>(false);
   const handleLoginInputChange = (event: any) => {
     setUsername(event.target.value);
   };
@@ -38,8 +50,15 @@ const Login: React.FC = () => {
   };
 
   async function login() {
-    const res = await loginUser(username, password, auth);
-    alert(`${res ? "Login success" : "Login failed"}`);
+    setBusy(true);
+    const res = await loginUser(email, password, auth);
+    if (res) {
+      toast("You have logged successfully");
+      // REQUIRES TO BE CHANGED!
+      window.location.href = "/tab1";
+      //
+    }
+    setBusy(false);
   }
 
   // remeber to keep dev tools open!!!!
@@ -50,10 +69,12 @@ const Login: React.FC = () => {
           <IonTitle>Login</IonTitle>
         </IonToolbar>
       </IonHeader>
+      {/* Loader */}
+      {busy && <IonLoading message="" duration={0} isOpen={busy} />}
       <IonContent className="ion-padding">
         <IonInput
-          placeholder="Username"
-          value={username}
+          placeholder="Email"
+          value={email}
           onIonChange={handleLoginInputChange}
         ></IonInput>
         <IonInput

@@ -39,7 +39,7 @@ const Login: React.FC = () => {
 
   async function login() {
     const res = await loginUser(username, password, auth);
-    console.log(`${res ? "Login success" : "Login failed"}`);
+    alert(`${res ? "Login success" : "Login failed"}`);
   }
 
   // remeber to keep dev tools open!!!!

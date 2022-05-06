@@ -20,14 +20,17 @@ const app = initializeApp(config);
 
 export function getCurrentUser() {
   return new Promise((resolve, reject) => {
-    const unsubscribe = getAuth().onAuthStateChanged(function (user) {
-      if (user) {
-        resolve(user);
-      } else {
-        resolve(null);
-      }
-      unsubscribe();
-    });
+    getAuth().onAuthStateChanged(
+      (user) => {
+        if (user) {
+          resolve(user);
+        } else {
+          resolve(null);
+        }
+      }, 
+      (error) => {
+        reject(error);
+      });
   });
 }
 

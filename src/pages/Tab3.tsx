@@ -18,6 +18,8 @@ import {
 import "./Tab3.css";
 import firebaseContext, { getCurrentUser } from "../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import TaskItem from "../components/TaskItem";
+import { NewTask } from "./NewTask";
 
 enum TaskStatus {
   ON_HOLD,
@@ -26,7 +28,7 @@ enum TaskStatus {
   FINISHED
 }
 
-type Task = {
+export type Task = {
     description: string;
     receiver: string;
     status: TaskStatus;
@@ -43,14 +45,15 @@ const Tab3: React.FC = () => {
   const [taskStatus, setTaskStatus] = useState(0);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
+  const [showModal, setShowModal] = useState(false);
 
   const user = auth.currentUser;
   console.log(user)
 
-  const getReceivedTasks = async () => {
+  const getSentTasks = async () => {
     // Construct query
     const tasksRef = collection(firestore, "tasks");
-    const q = query(tasksRef, where("receiver", "==", user?.uid));
+    const q = query(tasksRef, where("sender", "==", user?.uid));
     
     const querySnapshot = await getDocs(q);
 
@@ -66,7 +69,7 @@ const Tab3: React.FC = () => {
   }
 
   useEffect(() => {
-    getReceivedTasks();
+    getSentTasks();
   }, [])
 
   const getFilteredTasks = (): Task[] => {
@@ -88,7 +91,7 @@ const Tab3: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Your tasks</IonTitle>
+          <IonTitle>Your sent tasks</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
@@ -111,14 +114,12 @@ const Tab3: React.FC = () => {
         <IonList>
           {filteredTasks.map((task) => {
             return (
-              <IonItem key={task.id}>
-                <h3>{task.task_title}</h3>
-                <p>{task.description}</p>
-                <p>{task.last_date}</p>
-                <p>{task.sender}</p>
-              </IonItem>
+              <TaskItem key={task.id} task={task} />
             );
           })} 
+          <IonItem>
+            <IonButton routerLink="/newtask">New task</IonButton>
+          </IonItem>
         </IonList>
       </IonContent>
     </IonPage>

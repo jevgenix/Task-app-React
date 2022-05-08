@@ -42,6 +42,7 @@ import "./theme/variables.css";
 import { useContext } from "react";
 
 import { getCurrentUser } from "./firebaseConfig";
+import { NewTask } from "./pages/NewTask";
 
 setupIonicReact();
 
@@ -51,19 +52,23 @@ const RoutingSystem: React.FC = () => {
       <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
-            <Route render={() => <Tab1 />} exact path="/tab1">
+            <Route exact path="/tab1">
               <Tab1 />
             </Route>
             <Route exact path="/tab2">
               <Tab2 />
             </Route>
-            <Route path="/tab3">
+            <Route exact path="/tab3">
               <Tab3 />
+            </Route>
+            <Route exact path="/newtask">
+              <NewTask />
             </Route>
 
             <Route path="/login">
               <Login />
             </Route>
+
 
             <Route path="/register">
               <Register />

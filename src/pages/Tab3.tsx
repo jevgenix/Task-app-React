@@ -67,7 +67,7 @@ const Tab3: React.FC = () => {
 
   useEffect(() => {
     getReceivedTasks();
-  }, [getReceivedTasks])
+  }, [])
 
   const getFilteredTasks = (): Task[] => {
     return tasks.filter((task) => {

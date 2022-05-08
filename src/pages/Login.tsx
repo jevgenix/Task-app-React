@@ -1,3 +1,4 @@
+import "./Login.css";
 import { useState, useContext } from "react";
 import {
   IonContent,
@@ -8,7 +9,10 @@ import {
   IonInput,
   IonButton,
   IonLoading,
+  IonLabel,
+  IonItem,
 } from "@ionic/react";
+
 import { Link } from "react-router-dom";
 import firebase from "../firebaseConfig";
 import {
@@ -103,28 +107,41 @@ const Login: React.FC = () => {
       {/* Loader */}
       {busy && <IonLoading message="" duration={0} isOpen={busy} />}
       <IonContent className="ion-padding">
-        <IonInput
-          placeholder="Email"
-          value={email}
-          onIonChange={handleLoginInputChange}
-        ></IonInput>
-        <IonInput
-          placeholder="Password"
-          type="password"
-          value={password}
-          onIonChange={handlePwdInputChange}
-        ></IonInput>
-
-        <IonButton expand="full" onClick={login}>
-          Login
-        </IonButton>
-
-        <p>
-          <Link to="/register">Wanna make account?</Link>
-        </p>
-        <IonButton onClick={() => loginWithGoogle(auth)}>
-          Login with Google
-        </IonButton>
+        <div className="message">
+          <h1>Welcome,</h1>
+          <h5>Sign in to continue!</h5>
+        </div>
+        {/* */}
+        <div className="form">
+          <IonItem className="form-field">
+            <IonInput
+              className="input"
+              placeholder="Email"
+              value={email}
+              onIonChange={handleLoginInputChange}
+            ></IonInput>
+          </IonItem>
+          <IonItem className="form-field">
+            <IonInput
+              className="ion-input"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onIonChange={handlePwdInputChange}
+            ></IonInput>
+          </IonItem>
+          <div className="buttons">
+            <button className="connect" onClick={login}>
+              Login
+            </button>
+            <button className="connect" onClick={() => loginWithGoogle(auth)}>
+              Connect with Google
+            </button>
+          </div>
+          <p className="makeNewAcc">
+            <Link to="/register">Wanna make account?</Link>
+          </p>
+        </div>
       </IonContent>
     </IonPage>
   );

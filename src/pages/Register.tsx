@@ -8,6 +8,7 @@ import {
   IonInput,
   IonButton,
   IonLoading,
+  IonItem,
 } from "@ionic/react";
 
 import firebase from "../firebaseConfig";
@@ -115,39 +116,54 @@ const Register: React.FC = () => {
       {/* Loader */}
       {busy && <IonLoading message="" duration={0} isOpen={busy} />}
       <IonContent className="ion-padding">
-        <IonInput
-          placeholder="username"
-          value={username}
-          onIonChange={handleUsernameChange}
-        ></IonInput>
+        <div className="form">
+          <IonItem className="form-field">
+            <IonInput
+              className="input"
+              placeholder="Username"
+              value={username}
+              onIonChange={handleUsernameChange}
+            ></IonInput>
+          </IonItem>
 
-        <IonInput
-          placeholder="email"
-          type="email"
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-          value={email}
-          onIonChange={handleEmailChange}
-        ></IonInput>
+          <IonItem className="form-field">
+            <IonInput
+              className="input"
+              placeholder="Email"
+              type="email"
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+              value={email}
+              onIonChange={handleEmailChange}
+            ></IonInput>
+          </IonItem>
 
-        <IonInput
-          placeholder="password"
-          type="password"
-          value={password}
-          onIonChange={handlePasswordChange}
-        ></IonInput>
-        <IonInput
-          placeholder="confirm password"
-          type="password"
-          value={confirmPassword}
-          onIonChange={handleConfirmPasswordChange}
-        ></IonInput>
+          <IonItem className="form-field">
+            <IonInput
+              className="input"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onIonChange={handlePasswordChange}
+            ></IonInput>
+          </IonItem>
 
-        <IonButton expand="full" onClick={register}>
-          Register
-        </IonButton>
-        <p>
-          <Link to="/login">Back to login</Link>
-        </p>
+          <IonItem className="form-field">
+            <IonInput
+              className="input"
+              placeholder="Confirm Password"
+              type="password"
+              value={confirmPassword}
+              onIonChange={handleConfirmPasswordChange}
+            ></IonInput>
+          </IonItem>
+
+          <button className="connect" onClick={register}>
+            Register
+          </button>
+          <p className="makeNewAcc">
+            <Link to="/login">Back to login</Link>
+          </p>
+        </div>
       </IonContent>
     </IonPage>
   );

@@ -11,7 +11,12 @@ import {
 } from "@ionic/react";
 import { Link } from "react-router-dom";
 import firebase from "../firebaseConfig";
-import { Auth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { toast } from "../toast";
 
 // routerLink="/tab1"
@@ -33,6 +38,32 @@ async function loginUser(username: string, password: string, auth: Auth) {
       return false;
     }
   }
+}
+
+async function loginWithGoogle(auth: Auth) {
+  const provider = new GoogleAuthProvider();
+  provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      //const credential = GoogleAuthProvider.credentialFromResult(result);
+      //const token = credential.accessToken;
+
+      // The signed-in user info.
+      const user = result.user;
+      // ...
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.email;
+      // The AuthCredential type that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      // ...
+    });
 }
 
 const Login: React.FC = () => {
@@ -91,6 +122,9 @@ const Login: React.FC = () => {
         <p>
           <Link to="/register">Wanna make account?</Link>
         </p>
+        <IonButton onClick={() => loginWithGoogle(auth)}>
+          Login with Google
+        </IonButton>
       </IonContent>
     </IonPage>
   );

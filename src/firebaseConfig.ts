@@ -4,6 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 import React from "react";
+import { logoFirebase } from "ionicons/icons";
 
 const config = {
   apiKey: "AIzaSyByhWaGLOvIxneeBlFK9uotEUaaLi3DNbk",

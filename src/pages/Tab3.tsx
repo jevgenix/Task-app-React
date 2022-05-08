@@ -1,5 +1,7 @@
-import { useState } from "react";
-
+import React, { useState, useEffect, useContext } from "react";
+import firebase from "../firebaseConfig";
+import { useParams } from "react-router-dom";
+import { collection, doc, getDocs, onSnapshot } from 'firebase/firestore';
 import {
   IonContent,
   IonHeader,
@@ -12,13 +14,15 @@ import {
 import "./Tab3.css";
 
 const Tab3: React.FC = () => {
-  const [input, setInput] = useState("");
-
-  const handleInputChange = (e: any) => {
-    console.log(e.target.value);
-  };
-
-  // remeber to keep dev tools open!!!!
+  const { id } = useParams() as { id: string };
+  const [task, setTask] = useState<any[]>([]);
+  const { firestore } = useContext(firebase);
+  console.log({ id });
+  console.log("KJh");
+  useEffect(() =>
+    onSnapshot(collection(firestore, "tasks"), (snapshot) =>
+      setTask(snapshot.docs.map((doc) => doc.data()))
+    ), []);
   return (
     <IonPage>
       <IonHeader>
@@ -27,11 +31,8 @@ const Tab3: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <IonInput
-          placeholder="click me"
-          value={input}
-          onIonChange={handleInputChange}
-        ></IonInput>
+        <IonInput>
+        </IonInput>
       </IonContent>
     </IonPage>
   );

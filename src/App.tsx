@@ -1,7 +1,6 @@
 import { Redirect, Route } from "react-router-dom";
 import {
   IonApp,
-  IonIcon,
   IonLabel,
   IonRouterOutlet,
   IonTabBar,
@@ -16,6 +15,7 @@ import Tab2 from "./pages/Tab2";
 import Tab3 from "./pages/Tab3";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import View_task from "./pages/View_task";
 
 import FirebaseContext from "./firebaseConfig";
 
@@ -50,6 +50,7 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonTabs>
+
           <IonRouterOutlet>
             <Route exact path="/tab1">
               <Tab1 />
@@ -68,23 +69,22 @@ const App: React.FC = () => {
             <Route path="/register">
               <Register />
             </Route>
-
+            <Route path="/view_task/:id">
+              <View_task />
+            </Route>
             <Route exact path="/">
               <Redirect to="/login" />
             </Route>
           </IonRouterOutlet>
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1">
-              <IonIcon icon={triangle} />
-              <IonLabel>Loops</IonLabel>
+              <IonLabel>Home</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab2" href="/tab2">
-              <IonIcon icon={ellipse} />
-              <IonLabel>Buttons</IonLabel>
+              <IonLabel>Received Tasks</IonLabel>
             </IonTabButton>
             <IonTabButton tab="tab3" href="/tab3">
-              <IonIcon icon={square} />
-              <IonLabel>Inputs</IonLabel>
+              <IonLabel>Your Tasks</IonLabel>
             </IonTabButton>
           </IonTabBar>
         </IonTabs>

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState } from "react";
 import {
   IonContent,
   IonHeader,
@@ -8,38 +8,64 @@ import {
   IonInput,
   IonButton,
 } from "@ionic/react";
+
+import { register } from "../serviceWorkerRegistration";
 import { Link } from "react-router-dom";
-import firebase from "../firebaseConfig";
-import { Auth, signInWithEmailAndPassword } from "firebase/auth";
+
 // routerLink="/tab1"
 
-async function loginUser(username: string, password: string, auth: Auth) {
-  const email = `${username}@test.com`;
-  try {
-    const res = await signInWithEmailAndPassword(auth, email, password);
-    console.log(res);
-    return true;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-}
-
-const Login: React.FC = () => {
-  const { auth } = useContext(firebase);
+const Register: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const handleLoginInputChange = (event: any) => {
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleUsernameChange = (event: any) => {
     setUsername(event.target.value);
   };
-
-  const handlePwdInputChange = (event: any) => {
+  const handlePasswordChange = (event: any) => {
     setPassword(event.target.value);
   };
 
-  async function login() {
-    const res = await loginUser(username, password, auth);
-    console.log(`${res ? "Login success" : "Login failed"}`);
+  const handleConfirmPasswordChange = (event: any) => {
+    setConfirmPassword(event.target.value);
+  };
+
+  const handleEmailChange = (event: any) => {
+    setEmail(event.target.value);
+  };
+
+  function register() {
+    const regEx = /[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}(.[a-z{2,8}])?/g;
+    let bool = regEx.test(email); // true tai false, riippuu emailista!
+    if (bool === false) {
+      setEmail("");
+      return alert("Invalid email!");
+    }
+
+    if (password != confirmPassword) {
+      // if passwords doesnt match, bool equals false
+      bool = false;
+    }
+
+    if (bool) {
+      console.log(
+        "registered data:",
+        username,
+        email,
+        password,
+        confirmPassword
+      );
+      setUsername("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
+    } else {
+      alert("Password mismatch!");
+
+      setPassword("");
+      setConfirmPassword("");
+    }
   }
 
   // remeber to keep dev tools open!!!!
@@ -47,32 +73,46 @@ const Login: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Login</IonTitle>
+          <IonTitle>Register</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
         <IonInput
-          placeholder="Username"
+          placeholder="username"
           value={username}
-          onIonChange={handleLoginInputChange}
+          onIonChange={handleUsernameChange}
         ></IonInput>
+
         <IonInput
-          placeholder="Password"
+          placeholder="email"
+          type="email"
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
+          value={email}
+          onIonChange={handleEmailChange}
+        ></IonInput>
+
+        <IonInput
+          placeholder="password"
           type="password"
           value={password}
-          onIonChange={handlePwdInputChange}
+          onIonChange={handlePasswordChange}
+        ></IonInput>
+        <IonInput
+          placeholder="confirm password"
+          type="password"
+          value={confirmPassword}
+          onIonChange={handleConfirmPasswordChange}
         ></IonInput>
 
-        <IonButton expand="full" onClick={login}>
-          Login
+        <IonButton expand="full" onClick={register}>
+          Register
         </IonButton>
-
         <p>
-          <Link to="/register">Wanna make account?</Link>
+          <Link to="/login">Back to login</Link>
         </p>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Login;
+export default Register;

@@ -1,9 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
-<<<<<<< HEAD
-import "swiper/css/bundle";
-=======
 import { useEffect, useState } from "react";
->>>>>>> main
 import {
   IonApp,
   IonLabel,

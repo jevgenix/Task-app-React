@@ -1,12 +1,5 @@
-<<<<<<< HEAD
-import React, { useState, useEffect, useContext } from "react";
-import firebase from "../firebaseConfig";
-import { useParams } from "react-router-dom";
-import { collection, doc, getDocs, onSnapshot } from 'firebase/firestore';
-=======
 import { useContext, useEffect, useState } from "react";
 
->>>>>>> main
 import {
   IonContent,
   IonHeader,
@@ -48,17 +41,6 @@ export type Task = {
 
 // Your Tasks
 const Tab3: React.FC = () => {
-<<<<<<< HEAD
-  const { id } = useParams() as { id: string };
-  const [task, setTask] = useState<any[]>([]);
-  const { firestore } = useContext(firebase);
-  console.log({ id });
-  console.log("KJh");
-  useEffect(() =>
-    onSnapshot(collection(firestore, "tasks"), (snapshot) =>
-      setTask(snapshot.docs.map((doc) => doc.data()))
-    ), []);
-=======
   const { auth, firestore } = useContext(firebaseContext);
   const [taskStatus, setTaskStatus] = useState(0);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -104,7 +86,6 @@ const Tab3: React.FC = () => {
     setTaskStatus(status);             
   }
 
->>>>>>> main
   return (
     <IonPage>
       <IonHeader>
@@ -113,10 +94,6 @@ const Tab3: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-<<<<<<< HEAD
-        <IonInput>
-        </IonInput>
-=======
         <IonGrid>
           <IonRow>
             <IonCol>
@@ -145,7 +122,6 @@ const Tab3: React.FC = () => {
             <IonButton routerLink="/newtask">New task</IonButton>
           </IonItem>
         </IonList>
->>>>>>> main
       </IonContent>
     </IonPage>
   );

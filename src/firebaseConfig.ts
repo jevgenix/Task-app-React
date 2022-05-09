@@ -1,7 +1,7 @@
 import { initializeApp } from "@firebase/app";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
+import { getAuth, User } from "firebase/auth";
 
 import React from "react";
 import { logoFirebase } from "ionicons/icons";
@@ -19,14 +19,14 @@ const config = {
 
 const app = initializeApp(config);
 
-export function getCurrentUser() {
+export function getCurrentUser(): Promise<User> {
   return new Promise((resolve, reject) => {
     getAuth().onAuthStateChanged(
       (user) => {
         if (user) {
           resolve(user);
         } else {
-          resolve(null);
+          reject("No user logged in");
         }
       }, 
       (error) => {

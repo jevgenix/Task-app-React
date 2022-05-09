@@ -7,9 +7,7 @@ import {
   IonTitle,
   IonToolbar,
   IonInput,
-  IonButton,
   IonLoading,
-  IonLabel,
   IonItem,
 } from "@ionic/react";
 
@@ -23,9 +21,7 @@ import {
 } from "firebase/auth";
 import { toast } from "../toast";
 
-// routerLink="/tab1"
 async function loginUser(email: string, password: string, auth: Auth) {
-  //const email = `${username}@test.com`;
   try {
     const res = await signInWithEmailAndPassword(auth, email, password);
     console.log(res);
@@ -92,6 +88,7 @@ const Login: React.FC = () => {
     if (res) {
       toast("You have logged successfully");
       // OK
+
       window.location.href = "/tab1";
     }
     setBusy(false);

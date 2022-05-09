@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Swiper, SwiperSlide, useSwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Pagination } from "swiper";
 import {
   IonContent,
   IonHeader,
@@ -22,54 +20,44 @@ import {
   alertCircleOutline,
   checkmarkDoneCircleOutline,
   closeCircleOutline,
-  chevronForwardOutline,
   checkmarkOutline,
   closeOutline,
 } from "ionicons/icons";
-
 import "./Tab2.css";
 
-import { Link } from "react-router-dom";
-import firebase from "../firebaseConfig";
+import firebase, { getCurrentUser } from "../firebaseConfig";
 import {
   collection,
   where,
   query,
-  onSnapshot,
-  doc,
+  doc as task,
   writeBatch,
+  getDocs,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import { Task } from "./Tab3";
 
-const linkStyle = {
-  textDecoration: "none",
-};
-//Käyttäjien id:t testejä varten
-const uid1 = "hwwVHi8szBVh9zDTfoprFDayyUx2";
-const uid2 = "t1acen9hoBcMfwGFncnerJKGW6v2";
-
 const status = [
   {
-    id: 1,
+    id: 0,
     icon: alertCircleOutline,
     name: "New task",
     color: "warning",
   },
   {
-    id: 2,
+    id: 1,
     icon: checkmarkCircleOutline,
     name: "On process",
     color: "secondary",
   },
   {
-    id: 3,
+    id: 2,
     icon: checkmarkDoneCircleOutline,
     name: "Finished",
     color: "success",
   },
   {
-    id: 4,
+    id: 3,
     icon: closeCircleOutline,
     name: "Declined",
     color: "danger",
@@ -80,84 +68,107 @@ function WhichIcon(props: any) {
   return (
     <IonAvatar slot="start">
       <IonIcon
-        icon={status[e_status - 1].icon}
+        icon={status[e_status].icon}
         size="large"
-        color={status[e_status - 1].color}
+        color={status[e_status].color}
       />
     </IonAvatar>
   );
 }
+
 function StatusName(props: any) {
   const e_status = props.status;
-  return <p>Status: {status[e_status - 1].name}</p>;
+  return <p>Status: {status[e_status].name}</p>;
 }
 
+// moi
 const Tab1: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const { firestore } = useContext(firebase);
+  const { firestore, auth } = useContext(firebase);
 
   const updateStatus = (id: string, status: number) => {
     writeBatch(firestore)
-      .update(doc(firestore, "tasks", id), { status })
-      .commit();
+      .update(task(firestore, "tasks", id), { status })
+      .commit()
+      .then(() => {
+        getTasks();
+      });
   };
 
-  useEffect(
-    () =>
-      onSnapshot(
-        query(collection(firestore, "tasks"), where("receiver", "==", uid2)),
-        (snapshot) => {
-          setTasks(snapshot.docs.map((doc) => doc.data() as Task));
-        }
-      ),
-    []
-  );
-
   const handleLogOutButton = (auth: any) => {
-    console.log("aaa");
     signOut(auth);
     window.location.href = "/login";
   };
+
+  const getTasks = async () => {
+    const tasksRef = collection(firestore, "tasks");
+    const user = await getCurrentUser();
+    const q = query(
+      tasksRef,
+      where("receiver", "==", user?.email),
+      where("status", "==", 0)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    // Map the snapshot to an array of objects
+    const tasks: Task[] = querySnapshot.docs.map((doc) => {
+      const task = doc.data() as Task;
+      task.id = doc.id;
+      return task;
+    });
+
+    // Set the tasks state
+    setTasks(tasks);
+  };
+
+  useEffect(() => {
+    getTasks();
+  }, []);
+
   return (
-    <div>
-      <IonPage>
-        <IonHeader>
-          <IonToolbar>
-            <IonTitle class="ion-text-center">Home</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding" fullscreen>
-          {tasks
-            .filter((task) => task.status == 1)
-            .map((doc, i) => (
-              <IonCard key={i}>
-                <IonItem>
-                  <WhichIcon status={doc.status} />
-                  <IonLabel>
-                    <h3>{doc.task_title}</h3>
-                    <p>Sender: {doc.sender}</p>
-                    <StatusName status={doc.status} />
-                    <p>Due to {new Date(doc.last_date).toDateString()}</p>
-                  </IonLabel>
-                  <IonIcon
-                    icon={chevronForwardOutline}
-                    size="large"
-                    class="ion-text-end"
-                  />
-                </IonItem>
-                <IonCardContent>
-                  <IonButton onClick={() => updateStatus(doc.id, 2)}>
-                    <IonIcon icon={checkmarkOutline} />
-                  </IonButton>
-                  <IonButton onClick={() => updateStatus(doc.id, 4)}>
-                    <IonIcon icon={closeOutline} />
-                  </IonButton>
-                </IonCardContent>
-              </IonCard>
-            ))}
-        </IonContent>
-      </IonPage>
-    </div>
+    <IonPage>
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle class="ion-text-center">Home</IonTitle>
+          <IonButton onClick={() => handleLogOutButton(auth)} slot={"end"}>
+            Log out
+          </IonButton>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding" fullscreen>
+        {tasks.length > 0 ? (
+          tasks.map((task, i) => (
+            <IonCard key={i}>
+              <IonItem>
+                <WhichIcon status={task.status} />
+                <IonLabel>
+                  <h3>{task.task_title}</h3>
+                  <p>Description: {task.description}</p>
+                  <p>Sender: {task.sender}</p>
+                  <StatusName status={task.status} />
+                  <p>Due to {new Date(task.last_date).toDateString()}</p>
+                </IonLabel>
+              </IonItem>
+              <IonCardContent>
+                <IonButton onClick={() => updateStatus(task.id, 2)}>
+                  <IonIcon icon={checkmarkOutline} />
+                </IonButton>
+                <IonButton onClick={() => updateStatus(task.id, 4)}>
+                  <IonIcon icon={closeOutline} />
+                </IonButton>
+              </IonCardContent>
+            </IonCard>
+          ))
+        ) : (
+          <IonCard>
+            <IonCardContent>
+              <h3>No new tasks...</h3>
+            </IonCardContent>
+          </IonCard>
+        )}
+      </IonContent>
+    </IonPage>
   );
 };
 

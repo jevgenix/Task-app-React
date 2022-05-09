@@ -13,20 +13,22 @@ import {
   IonButton,
   IonCol,
   IonItem,
+  IonLabel,
 } from "@ionic/react";
 // import ExploreContainer from "../components/ExploreContainer";
 import "./Tab3.css";
-import firebaseContext, { getCurrentUser } from "../firebaseConfig";
+import firebaseContext from "../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import TaskItem from "../components/TaskItem";
 
-enum TaskStatus {
+export enum TaskStatus {
   ON_HOLD,
   ACCEPTED,
   DECLINED,
   FINISHED
 }
 
-type Task = {
+export type Task = {
     description: string;
     receiver: string;
     status: TaskStatus;
@@ -45,12 +47,11 @@ const Tab3: React.FC = () => {
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
 
   const user = auth.currentUser;
-  console.log(user)
 
-  const getReceivedTasks = async () => {
+  const getSentTasks = async () => {
     // Construct query
     const tasksRef = collection(firestore, "tasks");
-    const q = query(tasksRef, where("receiver", "==", user?.uid));
+    const q = query(tasksRef, where("sender", "==", user?.uid));
     
     const querySnapshot = await getDocs(q);
 
@@ -65,10 +66,13 @@ const Tab3: React.FC = () => {
     setTasks(tasks);
   }
 
+  // Get the tasks when the component is mounted
   useEffect(() => {
-    getReceivedTasks();
-  }, [])
+    getSentTasks();
+    setFilteredTasks(getFilteredTasks())
+  }, [taskStatus]);
 
+  // Filter the tasks by status
   const getFilteredTasks = (): Task[] => {
     return tasks.filter((task) => {
       if (task.status === taskStatus) {
@@ -76,19 +80,18 @@ const Tab3: React.FC = () => {
       }
     });
   }
-  
 
+  // Set the filtered tasks state
   const handleTaskStatus = (status: TaskStatus) => {
-    setTaskStatus(status);
+    setTaskStatus(status);              
     setFilteredTasks(getFilteredTasks());
   }
 
-  // remeber to keep dev tools open!!!!
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Your tasks</IonTitle>
+          <IonTitle>Your sent tasks</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
@@ -104,21 +107,21 @@ const Tab3: React.FC = () => {
               <IonButton onClick={() => handleTaskStatus(TaskStatus.DECLINED)}>Declined</IonButton>
             </IonCol>
             <IonCol>
-            <IonButton onClick={() => handleTaskStatus(TaskStatus.FINISHED)}>Finished</IonButton>
+              <IonButton onClick={() => handleTaskStatus(TaskStatus.FINISHED)}>Finished</IonButton>
             </IonCol>
           </IonRow>
         </IonGrid>
         <IonList>
-          {filteredTasks.map((task) => {
+          {
+            // Map the tasks to a list of TaskItem components
+          filteredTasks.map((task) => {
             return (
-              <IonItem key={task.id}>
-                <h3>{task.task_title}</h3>
-                <p>{task.description}</p>
-                <p>{task.last_date}</p>
-                <p>{task.sender}</p>
-              </IonItem>
+              <TaskItem key={task.id} task={task} />
             );
           })} 
+          <IonItem>
+            <IonButton routerLink="/newtask">New task</IonButton>
+          </IonItem>
         </IonList>
       </IonContent>
     </IonPage>

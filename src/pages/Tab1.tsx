@@ -40,6 +40,7 @@ import {
   writeBatch,
 } from "firebase/firestore";
 import { signOut } from "firebase/auth";
+import { Task } from "./Tab3";
 
 const linkStyle = {
   textDecoration: "none",
@@ -90,17 +91,23 @@ function StatusName(props: any) {
   const e_status = props.status;
   return <p>Status: {status[e_status - 1].name}</p>;
 }
+
 const Tab1: React.FC = () => {
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const { firestore } = useContext(firebase);
-  const { auth } = useContext(firebase);
+
+  const updateStatus = (id: string, status: number) => {
+    writeBatch(firestore)
+      .update(doc(firestore, "tasks", id), { status })
+      .commit();
+  };
 
   useEffect(
     () =>
       onSnapshot(
         query(collection(firestore, "tasks"), where("receiver", "==", uid2)),
         (snapshot) => {
-          setTasks(snapshot.docs.map((doc) => doc.data()));
+          setTasks(snapshot.docs.map((doc) => doc.data() as Task));
         }
       ),
     []
@@ -111,7 +118,6 @@ const Tab1: React.FC = () => {
     signOut(auth);
     window.location.href = "/login";
   };
-
   return (
     <div>
       <IonPage>
@@ -140,31 +146,15 @@ const Tab1: React.FC = () => {
                   />
                 </IonItem>
                 <IonCardContent>
-                  <IonButton
-                    onClick={() => {
-                      writeBatch(firestore).update(
-                        doc(firestore, "tasks", doc.id),
-                        { status: 2 }
-                      );
-                    }}
-                  >
+                  <IonButton onClick={() => updateStatus(doc.id, 2)}>
                     <IonIcon icon={checkmarkOutline} />
                   </IonButton>
-                  <IonButton
-                    onClick={() =>
-                      doc(firestore, "tasks", doc.id).update({ status: 4 })
-                    }
-                  >
+                  <IonButton onClick={() => updateStatus(doc.id, 4)}>
                     <IonIcon icon={closeOutline} />
                   </IonButton>
                 </IonCardContent>
               </IonCard>
             ))}
-
-          <IonButton onClick={() => handleLogOutButton(auth)}>
-            {" "}
-            Log out{" "}
-          </IonButton>
         </IonContent>
       </IonPage>
     </div>

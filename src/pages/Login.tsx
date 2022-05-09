@@ -92,6 +92,7 @@ const Login: React.FC = () => {
     if (res) {
       toast("You have logged successfully");
       // OK
+
       window.location.href = "/tab1";
     }
     setBusy(false);

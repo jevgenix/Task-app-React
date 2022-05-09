@@ -135,10 +135,10 @@ const RoutingSystemWithTabs: React.FC = () => {
 
 const App: React.FC = () => {
   const [busy, setBusy] = useState(true);
-  const firebaseApp = useContext(FirebaseContext);
+
   useEffect(() => {
     getCurrentUser().then((user) => {
-      // regular login
+      // regular loginasdas
       if (user) {
         window.history.replaceState({}, "", "/tab1");
       } else {
@@ -147,8 +147,6 @@ const App: React.FC = () => {
       }
     });
   }, []);
-
-  console.log(firebaseApp);
   return (
     <IonApp>{busy ? <RoutingSystemWithTabs /> : <RoutingSystem />}</IonApp>
   );

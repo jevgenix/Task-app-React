@@ -43,18 +43,13 @@ async function loginUser(email: string, password: string, auth: Auth) {
 async function loginWithGoogle(auth: Auth) {
   const provider = new GoogleAuthProvider();
   provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
-
   signInWithPopup(auth, provider)
     .then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
       //const credential = GoogleAuthProvider.credentialFromResult(result);
       //const token = credential.accessToken;
-
-      // The signed-in user info.
       window.location.href = "/tab1";
-
       const user = result.user;
-      // ...
     })
     .catch((error) => {
       // Handle Errors here.
@@ -64,7 +59,6 @@ async function loginWithGoogle(auth: Auth) {
       const email = error.email;
       // The AuthCredential type that was used.
       const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
     });
 }
 
@@ -87,8 +81,6 @@ const Login: React.FC = () => {
     const res = await loginUser(email, password, auth);
     if (res) {
       toast("You have logged successfully");
-      // OK
-
       window.location.href = "/tab1";
     }
     setBusy(false);
@@ -99,7 +91,7 @@ const Login: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Register</IonTitle>
+          <IonTitle>Login</IonTitle>
         </IonToolbar>
       </IonHeader>
       {/* Loader */}

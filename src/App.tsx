@@ -1,4 +1,5 @@
 import { Redirect, Route } from "react-router-dom";
+import "swiper/css/bundle";
 import {
   IonApp,
   IonLabel,

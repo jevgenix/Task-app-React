@@ -103,7 +103,6 @@ const Tab2: React.FC = () => {
                     {doc.task_title}
                   </h3>
                   <p>Sender: {doc.sender}</p>
-
                 </IonLabel>
                 <IonIcon icon={chevronForwardOutline} size="large" class="ion-text-end" />
               </IonItem>

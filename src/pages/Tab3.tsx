@@ -41,7 +41,7 @@ export type Task = {
 
 // Your Tasks
 const Tab3: React.FC = () => {
-  const {auth, firestore} = useContext(firebaseContext);
+  const { auth, firestore } = useContext(firebaseContext);
   const [taskStatus, setTaskStatus] = useState(0);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
@@ -51,7 +51,7 @@ const Tab3: React.FC = () => {
   const getSentTasks = async () => {
     // Construct query
     const tasksRef = collection(firestore, "tasks");
-    const q = query(tasksRef, where("sender", "==", user?.uid));
+    const q = query(tasksRef, where("sender", "==", user?.email));
     
     const querySnapshot = await getDocs(q);
 
@@ -69,7 +69,7 @@ const Tab3: React.FC = () => {
   // Get the tasks when the component is mounted
   useEffect(() => {
     getSentTasks();
-    setFilteredTasks(getFilteredTasks())
+    setFilteredTasks(getFilteredTasks());
   }, [taskStatus]);
 
   // Filter the tasks by status
@@ -83,8 +83,7 @@ const Tab3: React.FC = () => {
 
   // Set the filtered tasks state
   const handleTaskStatus = (status: TaskStatus) => {
-    setTaskStatus(status);              
-    setFilteredTasks(getFilteredTasks());
+    setTaskStatus(status);             
   }
 
   return (

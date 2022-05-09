@@ -14,8 +14,8 @@ export const NewTask = () => {
 
     const sendTask = async () => {
         console.log(taskTitle, taskDescription, taskReceiver, taskLastDate)
-        const tasksRef = collection(context.firestore, "tasks")
-        const sender = context.auth.currentUser?.uid
+        const tasksRef  = collection(context.firestore, "tasks")
+        const sender    = context.auth.currentUser?.email
 
         if(!sender) return toast("You must be logged in to send a task")
 

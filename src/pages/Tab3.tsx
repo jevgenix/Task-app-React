@@ -13,15 +13,15 @@ import {
   IonButton,
   IonCol,
   IonItem,
+  IonLabel,
 } from "@ionic/react";
 // import ExploreContainer from "../components/ExploreContainer";
 import "./Tab3.css";
-import firebaseContext, { getCurrentUser } from "../firebaseConfig";
+import firebaseContext from "../firebaseConfig";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import TaskItem from "../components/TaskItem";
-import { NewTask } from "./NewTask";
 
-enum TaskStatus {
+export enum TaskStatus {
   ON_HOLD,
   ACCEPTED,
   DECLINED,
@@ -45,10 +45,8 @@ const Tab3: React.FC = () => {
   const [taskStatus, setTaskStatus] = useState(0);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filteredTasks, setFilteredTasks] = useState<Task[]>([]);
-  const [showModal, setShowModal] = useState(false);
 
   const user = auth.currentUser;
-  console.log(user)
 
   const getSentTasks = async () => {
     // Construct query
@@ -68,10 +66,13 @@ const Tab3: React.FC = () => {
     setTasks(tasks);
   }
 
+  // Get the tasks when the component is mounted
   useEffect(() => {
     getSentTasks();
-  }, [])
+    setFilteredTasks(getFilteredTasks())
+  }, [taskStatus]);
 
+  // Filter the tasks by status
   const getFilteredTasks = (): Task[] => {
     return tasks.filter((task) => {
       if (task.status === taskStatus) {
@@ -79,14 +80,13 @@ const Tab3: React.FC = () => {
       }
     });
   }
-  
 
+  // Set the filtered tasks state
   const handleTaskStatus = (status: TaskStatus) => {
-    setTaskStatus(status);
+    setTaskStatus(status);              
     setFilteredTasks(getFilteredTasks());
   }
 
-  // remeber to keep dev tools open!!!!
   return (
     <IonPage>
       <IonHeader>
@@ -107,12 +107,14 @@ const Tab3: React.FC = () => {
               <IonButton onClick={() => handleTaskStatus(TaskStatus.DECLINED)}>Declined</IonButton>
             </IonCol>
             <IonCol>
-            <IonButton onClick={() => handleTaskStatus(TaskStatus.FINISHED)}>Finished</IonButton>
+              <IonButton onClick={() => handleTaskStatus(TaskStatus.FINISHED)}>Finished</IonButton>
             </IonCol>
           </IonRow>
         </IonGrid>
         <IonList>
-          {filteredTasks.map((task) => {
+          {
+            // Map the tasks to a list of TaskItem components
+          filteredTasks.map((task) => {
             return (
               <TaskItem key={task.id} task={task} />
             );

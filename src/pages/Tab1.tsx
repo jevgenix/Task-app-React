@@ -39,12 +39,13 @@ const arr = [
 // className="ion-padding" on lisätty IonContentiin
 const Tab1: React.FC = () => {
   const handleLogOutButton = (auth: any) => {
-    console.log("aaa");
     signOut(auth);
     window.location.href = "/login";
   };
 
   const { auth } = useContext(firebase);
+
+  console.log(auth.currentUser);
   return (
     <IonPage>
       <IonHeader>

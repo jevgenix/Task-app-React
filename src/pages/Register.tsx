@@ -120,15 +120,6 @@ const Register: React.FC = () => {
           <IonItem className="form-field">
             <IonInput
               className="input"
-              placeholder="Username"
-              value={username}
-              onIonChange={handleUsernameChange}
-            ></IonInput>
-          </IonItem>
-
-          <IonItem className="form-field">
-            <IonInput
-              className="input"
               placeholder="Email"
               type="email"
               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"

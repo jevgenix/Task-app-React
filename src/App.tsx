@@ -49,6 +49,38 @@ const RoutingSystem: React.FC = () => {
   return (
     <IonApp>
       <IonReactRouter>
+        <IonRouterOutlet>
+          <Route render={() => <Tab1 />} exact path="/tab1">
+            <Tab1 />
+          </Route>
+          <Route exact path="/tab2">
+            <Tab2 />
+          </Route>
+          <Route path="/tab3">
+            <Tab3 />
+          </Route>
+
+          <Route path="/login">
+            <Login />
+          </Route>
+
+          <Route path="/register">
+            <Register />
+          </Route>
+
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
+        </IonRouterOutlet>
+      </IonReactRouter>
+    </IonApp>
+  );
+};
+
+const RoutingSystemWithTabs: React.FC = () => {
+  return (
+    <IonApp>
+      <IonReactRouter>
         <IonTabs>
           <IonRouterOutlet>
             <Route render={() => <Tab1 />} exact path="/tab1">
@@ -73,6 +105,7 @@ const RoutingSystem: React.FC = () => {
               <Redirect to="/login" />
             </Route>
           </IonRouterOutlet>
+
           <IonTabBar slot="bottom">
             <IonTabButton tab="tab1" href="/tab1">
               <IonIcon icon={triangle} />
@@ -103,13 +136,15 @@ const App: React.FC = () => {
         window.history.replaceState({}, "", "/tab1");
       } else {
         window.history.replaceState({}, "", "/login");
+        setBusy(false);
       }
-      setBusy(false);
     });
   }, []);
 
   console.log(firebaseApp);
-  return <IonApp>{busy ? <IonSpinner /> : <RoutingSystem />}</IonApp>;
+  return (
+    <IonApp>{busy ? <RoutingSystemWithTabs /> : <RoutingSystem />}</IonApp>
+  );
 };
 
 export default App;

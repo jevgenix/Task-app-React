@@ -24,8 +24,8 @@ import {
 import { toast } from "../toast";
 
 // routerLink="/tab1"
-async function loginUser(username: string, password: string, auth: Auth) {
-  const email = `${username}@test.com`;
+async function loginUser(email: string, password: string, auth: Auth) {
+  //const email = `${username}@test.com`;
   try {
     const res = await signInWithEmailAndPassword(auth, email, password);
     console.log(res);
@@ -89,9 +89,8 @@ const Login: React.FC = () => {
     const res = await loginUser(email, password, auth);
     if (res) {
       toast("You have logged successfully");
-      // REQUIRES TO BE CHANGED!
+      // OK
       window.location.href = "/tab1";
-      //
     }
     setBusy(false);
   }

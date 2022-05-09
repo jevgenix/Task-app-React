@@ -19,6 +19,22 @@ const config = {
 
 const app = initializeApp(config);
 
+export function getCurrentUser() {
+  return new Promise((resolve, reject) => {
+    getAuth().onAuthStateChanged(
+      (user) => {
+        if (user) {
+          resolve(user);
+        } else {
+          resolve(null);
+        }
+      }, 
+      (error) => {
+        reject(error);
+      });
+  });
+}
+
 export const context = {
   app,
   db: getDatabase(app),

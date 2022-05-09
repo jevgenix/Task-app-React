@@ -1,4 +1,5 @@
-import { useState } from "react";
+import "./Login.css";
+import { useState, useContext } from "react";
 import {
   IonContent,
   IonHeader,
@@ -7,65 +8,93 @@ import {
   IonToolbar,
   IonInput,
   IonButton,
+  IonLoading,
+  IonLabel,
+  IonItem,
 } from "@ionic/react";
 
-import { register } from "../serviceWorkerRegistration";
 import { Link } from "react-router-dom";
+import firebase from "../firebaseConfig";
+import {
+  Auth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import { toast } from "../toast";
 
 // routerLink="/tab1"
+async function loginUser(email: string, password: string, auth: Auth) {
+  //const email = `${username}@test.com`;
+  try {
+    const res = await signInWithEmailAndPassword(auth, email, password);
+    console.log(res);
+    return true;
+  } catch (err) {
+    if (err instanceof Error) {
+      if (err.message === "Firebase: Error (auth/wrong-password).") {
+        toast("Wrong password!");
+      } else if (err.message === "Firebase: Error (auth/user-not-found).") {
+        toast("User not found!");
+      } else {
+        toast(err.message);
+      }
+      return false;
+    }
+  }
+}
 
-const Register: React.FC = () => {
-  const [username, setUsername] = useState("");
+async function loginWithGoogle(auth: Auth) {
+  const provider = new GoogleAuthProvider();
+  provider.addScope("https://www.googleapis.com/auth/contacts.readonly");
+
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      //const credential = GoogleAuthProvider.credentialFromResult(result);
+      //const token = credential.accessToken;
+
+      // The signed-in user info.
+      window.location.href = "/tab1";
+
+      const user = result.user;
+      // ...
+    })
+    .catch((error) => {
+      // Handle Errors here.
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      // The email of the user's account used.
+      const email = error.email;
+      // The AuthCredential type that was used.
+      const credential = GoogleAuthProvider.credentialFromError(error);
+      // ...
+    });
+}
+
+const Login: React.FC = () => {
+  const { auth } = useContext(firebase);
+  const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [email, setEmail] = useState("");
 
-  const handleUsernameChange = (event: any) => {
+  // loader boolean!
+  const [busy, setBusy] = useState<boolean>(false);
+  const handleLoginInputChange = (event: any) => {
     setUsername(event.target.value);
   };
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value);
   };
 
-  const handleConfirmPasswordChange = (event: any) => {
-    setConfirmPassword(event.target.value);
-  };
-
-  const handleEmailChange = (event: any) => {
-    setEmail(event.target.value);
-  };
-
-  function register() {
-    const regEx = /[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,8}(.[a-z{2,8}])?/g;
-    let bool = regEx.test(email); // true tai false, riippuu emailista!
-    if (bool === false) {
-      setEmail("");
-      return alert("Invalid email!");
+  async function login() {
+    setBusy(true);
+    const res = await loginUser(email, password, auth);
+    if (res) {
+      toast("You have logged successfully");
+      // OK
+      window.location.href = "/tab1";
     }
-
-    if (password != confirmPassword) {
-      // if passwords doesnt match, bool equals false
-      bool = false;
-    }
-
-    if (bool) {
-      console.log(
-        "registered data:",
-        username,
-        email,
-        password,
-        confirmPassword
-      );
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-    } else {
-      alert("Password mismatch!");
-
-      setPassword("");
-      setConfirmPassword("");
-    }
+    setBusy(false);
   }
 
   // remeber to keep dev tools open!!!!
@@ -76,43 +105,47 @@ const Register: React.FC = () => {
           <IonTitle>Register</IonTitle>
         </IonToolbar>
       </IonHeader>
+      {/* Loader */}
+      {busy && <IonLoading message="" duration={0} isOpen={busy} />}
       <IonContent className="ion-padding">
-        <IonInput
-          placeholder="username"
-          value={username}
-          onIonChange={handleUsernameChange}
-        ></IonInput>
-
-        <IonInput
-          placeholder="email"
-          type="email"
-          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-          value={email}
-          onIonChange={handleEmailChange}
-        ></IonInput>
-
-        <IonInput
-          placeholder="password"
-          type="password"
-          value={password}
-          onIonChange={handlePasswordChange}
-        ></IonInput>
-        <IonInput
-          placeholder="confirm password"
-          type="password"
-          value={confirmPassword}
-          onIonChange={handleConfirmPasswordChange}
-        ></IonInput>
-
-        <IonButton expand="full" onClick={register}>
-          Register
-        </IonButton>
-        <p>
-          <Link to="/login">Back to login</Link>
-        </p>
+        <div className="message">
+          <h1>Welcome,</h1>
+          <h5>Sign in to continue!</h5>
+        </div>
+        {/* */}
+        <div className="form">
+          <IonItem className="form-field">
+            <IonInput
+              className="input"
+              placeholder="Email"
+              value={email}
+              onIonChange={handleLoginInputChange}
+            ></IonInput>
+          </IonItem>
+          <IonItem className="form-field">
+            <IonInput
+              className="ion-input"
+              placeholder="Password"
+              type="password"
+              value={password}
+              onIonChange={handlePasswordChange}
+            ></IonInput>
+          </IonItem>
+          <div className="buttons">
+            <button className="connect" onClick={login}>
+              Login
+            </button>
+            <button className="connect" onClick={() => loginWithGoogle(auth)}>
+              Connect with Google
+            </button>
+          </div>
+          <p className="makeNewAcc">
+            <Link to="/register">Wanna make account?</Link>
+          </p>
+        </div>
       </IonContent>
     </IonPage>
   );
 };
 
-export default Register;
+export default Login;

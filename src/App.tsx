@@ -17,7 +17,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import View_task from "./pages/View_task";
 
-
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
 
@@ -79,7 +78,6 @@ const RoutingSystemWithTabs: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonTabs>
-
           <IonRouterOutlet>
             <Route exact path="/tab1">
               <Tab1 />

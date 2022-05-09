@@ -55,6 +55,8 @@ async function loginWithGoogle(auth: Auth) {
       //const token = credential.accessToken;
 
       // The signed-in user info.
+      window.location.href = "/tab1";
+
       const user = result.user;
       // ...
     })
@@ -74,6 +76,7 @@ const Login: React.FC = () => {
   const { auth } = useContext(firebase);
   const [email, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   // loader boolean!
   const [busy, setBusy] = useState<boolean>(false);
   const handleLoginInputChange = (event: any) => {

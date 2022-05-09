@@ -87,12 +87,15 @@ const RoutingSystemWithTabs: React.FC = () => {
             <Route exact path="/tab1">
               <Tab1 />
             </Route>
+
             <Route exact path="/tab2">
               <Tab2 />
             </Route>
+
             <Route exact path="/tab3">
               <Tab3 />
             </Route>
+
             <Route exact path="/newtask">
               <NewTask />
             </Route>
@@ -100,7 +103,6 @@ const RoutingSystemWithTabs: React.FC = () => {
             <Route path="/login">
               <Login />
             </Route>
-
 
             <Route path="/register">
               <Register />

@@ -27,10 +27,6 @@ const Register: React.FC = () => {
   // loader boolean!
   const [busy, setBusy] = useState<boolean>(false);
 
-  const handleUsernameChange = (event: any) => {
-    setUsername(event.target.value);
-  };
-
   const handlePasswordChange = (event: any) => {
     setPassword(event.target.value);
   };
@@ -105,7 +101,6 @@ const Register: React.FC = () => {
     }
   }
 
-  // remeber to keep dev tools open!!!!
   return (
     <IonPage>
       <IonHeader>

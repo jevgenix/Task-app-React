@@ -139,13 +139,11 @@ const App: React.FC = () => {
   useEffect(() => {
     getCurrentUser().then((user) => {
       // regular loginasdas
-      if (user) {
-        window.history.replaceState({}, "", "/tab1");
-      } else {
-        window.history.replaceState({}, "", "/login");
-        setBusy(false);
-      }
-    });
+      window.history.replaceState({}, "", "/tab1");
+    }).catch(() => {
+      window.history.replaceState({}, "", "/login");
+      setBusy(false);
+    })
   }, []);
   return (
     <IonApp>{busy ? <RoutingSystemWithTabs /> : <RoutingSystem />}</IonApp>
